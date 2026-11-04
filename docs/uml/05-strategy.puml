@@ -1,0 +1,54 @@
+@startuml 05-strategy
+!pragma layout smetana
+title Strategy - payment methods
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+hide empty members
+
+interface PaymentStrategy <<Strategy>> {
+  +pay(amount : int) : boolean
+  +getMethodName() : String
+}
+
+class CashPayment <<ConcreteStrategy>> {
+  -cashGiven : int
+  +pay(amount : int) : boolean
+  +getMethodName() : String
+}
+
+class CardPayment <<ConcreteStrategy>> {
+  -cardNumber : String
+  +pay(amount : int) : boolean
+  +getMethodName() : String
+  -isValidCardNumber() : boolean
+  -maskedCardNumber() : String
+}
+
+class QrPayment <<ConcreteStrategy>> {
+  -phoneNumber : String
+  +pay(amount : int) : boolean
+  +getMethodName() : String
+}
+
+class Checkout <<Context>> {
+  -paymentStrategy : PaymentStrategy
+  +setPaymentStrategy(paymentStrategy : PaymentStrategy) : void
+  +processPayment(amount : int) : boolean
+}
+
+class RestaurantFacade <<Client>> {
+  +payOrder(orderId : int, paymentStrategy : PaymentStrategy) : boolean
+}
+
+PaymentStrategy <|.. CashPayment
+PaymentStrategy <|.. CardPayment
+PaymentStrategy <|.. QrPayment
+Checkout o--> "0..1" PaymentStrategy
+RestaurantFacade --> Checkout
+
+note bottom of Checkout
+  processPayment(amount) delegates to
+  paymentStrategy.pay(amount); the strategy
+  can be replaced between attempts
+end note
+@enduml

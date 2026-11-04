@@ -1,0 +1,50 @@
+@startuml 06-facade
+!pragma layout smetana
+title Facade - one entry point to the ordering workflow
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+hide empty members
+
+class ConsoleApp <<Client>>
+class DemoScenario <<Client>>
+
+class RestaurantFacade <<Facade>> {
+  -menu : Menu
+  -kitchenDisplay : KitchenDisplay
+  -checkout : Checkout
+  -orders : Map<Integer, Order>
+  +getMenuItems() : Map<Integer, Meal>
+  +getToppings() : List<Topping>
+  +createMeal(menuNumber : int, toppings : List<Topping>) : Meal
+  +placeOrder(order : Order) : Order
+  +advanceOrder(orderId : int) : void
+  +cancelOrder(orderId : int) : void
+  +payOrder(orderId : int, paymentStrategy : PaymentStrategy) : boolean
+  +findOrder(orderId : int) : Order
+  +getOrders() : List<Order>
+}
+
+package "Subsystem" {
+  class Menu
+  enum Topping
+  class Order
+  class KitchenDisplay
+  class CustomerNotifier
+  class Checkout
+}
+
+ConsoleApp --> RestaurantFacade
+DemoScenario --> RestaurantFacade
+
+RestaurantFacade --> Menu : factory method
+RestaurantFacade ..> Topping : decorators
+RestaurantFacade o--> "*" Order
+RestaurantFacade --> KitchenDisplay : subscribes
+RestaurantFacade ..> CustomerNotifier : <<creates>>
+RestaurantFacade --> Checkout : strategy
+
+note right of RestaurantFacade
+  advanceOrder(): a READY order can be
+  COMPLETED only after it is paid
+end note
+@enduml

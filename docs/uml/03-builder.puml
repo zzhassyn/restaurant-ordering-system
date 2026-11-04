@@ -1,0 +1,69 @@
+@startuml 03-builder
+!pragma layout smetana
+title Builder - assembling an order
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+hide empty members
+
+class Order <<Product>> {
+  -id : int
+  -customerName : String
+  -orderType : OrderType
+  -tableNumber : int
+  -deliveryAddress : String
+  -meals : List<Meal>
+  -notes : String
+  -Order(builder : Builder)
+  +getTotalPrice() : int
+  +describeDestination() : String
+}
+
+class "Order.Builder" as Builder <<Builder>> {
+  -customerName : String
+  -orderType : OrderType = DINE_IN
+  -tableNumber : int
+  -deliveryAddress : String
+  -meals : List<Meal>
+  -notes : String
+  +setCustomerName(customerName : String) : Builder
+  +setOrderType(orderType : OrderType) : Builder
+  +setTableNumber(tableNumber : int) : Builder
+  +setDeliveryAddress(deliveryAddress : String) : Builder
+  +addMeal(meal : Meal) : Builder
+  +setNotes(notes : String) : Builder
+  +build() : Order
+  -validate() : void
+}
+
+enum OrderType {
+  DINE_IN
+  TAKEAWAY
+  DELIVERY
+  +getLabel() : String
+}
+
+interface Meal
+
+class ConsoleApp <<Client>>
+class DemoScenario <<Client>>
+
+Order +-- Builder
+Builder ..> Order : <<builds>>
+Order --> OrderType
+Order o--> "1..*" Meal
+ConsoleApp ..> Builder : uses
+DemoScenario ..> Builder : uses
+
+note right of Builder
+  build() throws IllegalStateException when:
+  - customer name is empty
+  - there are no meals
+  - DINE_IN has no table number
+  - DELIVERY has no address
+end note
+
+note bottom of ConsoleApp
+  The clients play the Director role and call
+  the setters in the order the data is entered.
+end note
+@enduml

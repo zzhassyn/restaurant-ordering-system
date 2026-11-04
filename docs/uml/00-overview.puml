@@ -1,0 +1,118 @@
+@startuml 00-overview
+!pragma layout smetana
+title Restaurant Ordering System - overall class diagram
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam packageStyle rectangle
+hide members
+show enum fields
+
+class Main
+
+package "ui" {
+  class ConsoleApp
+  class DemoScenario
+}
+
+package "facade  [Facade]" {
+  class RestaurantFacade
+}
+
+package "factory  [Factory Method]" {
+  interface MealFactory
+  class Menu
+  class BurgerFactory
+  class PizzaFactory
+  class PastaFactory
+  class SaladFactory
+}
+
+package "meal" {
+  interface Meal
+  class Burger
+  class Pizza
+  class Pasta
+  class Salad
+}
+
+package "topping  [Decorator]" {
+  abstract class ToppingDecorator
+  class ExtraCheese
+  class Bacon
+  class Jalapeno
+  class Mushrooms
+  class ExtraSauce
+  enum Topping
+}
+
+package "order  [Builder]" {
+  class Order
+  class "Order.Builder" as Builder
+  enum OrderType
+  enum OrderStatus
+}
+
+package "observer  [Observer]" {
+  interface OrderSubject
+  interface OrderObserver
+  class KitchenDisplay
+  class CustomerNotifier
+}
+
+package "payment  [Strategy]" {
+  interface PaymentStrategy
+  class Checkout
+  class CashPayment
+  class CardPayment
+  class QrPayment
+}
+
+Main --> ConsoleApp
+Main --> DemoScenario
+ConsoleApp --> RestaurantFacade
+DemoScenario --> RestaurantFacade
+ConsoleApp ..> Builder
+ConsoleApp ..> PaymentStrategy
+
+RestaurantFacade --> Menu
+RestaurantFacade ..> Topping
+RestaurantFacade --> Checkout
+RestaurantFacade --> KitchenDisplay
+RestaurantFacade ..> CustomerNotifier
+RestaurantFacade o--> Order
+
+Menu o--> MealFactory
+MealFactory <|.. BurgerFactory
+MealFactory <|.. PizzaFactory
+MealFactory <|.. PastaFactory
+MealFactory <|.. SaladFactory
+MealFactory ..> Meal
+
+Meal <|.. Burger
+Meal <|.. Pizza
+Meal <|.. Pasta
+Meal <|.. Salad
+Meal <|.. ToppingDecorator
+ToppingDecorator o--> Meal
+ToppingDecorator <|-- ExtraCheese
+ToppingDecorator <|-- Bacon
+ToppingDecorator <|-- Jalapeno
+ToppingDecorator <|-- Mushrooms
+ToppingDecorator <|-- ExtraSauce
+Topping ..> ToppingDecorator
+
+Order +-- Builder
+Builder ..> Order
+Order o--> Meal
+Order --> OrderType
+Order --> OrderStatus
+OrderSubject <|.. Order
+Order o--> OrderObserver
+OrderObserver <|.. KitchenDisplay
+OrderObserver <|.. CustomerNotifier
+
+Checkout o--> PaymentStrategy
+PaymentStrategy <|.. CashPayment
+PaymentStrategy <|.. CardPayment
+PaymentStrategy <|.. QrPayment
+@enduml

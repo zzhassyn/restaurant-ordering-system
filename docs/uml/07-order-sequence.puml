@@ -1,0 +1,74 @@
+@startuml 07-order-sequence
+title Sequence - placing, cooking, paying and completing an order
+skinparam shadowing false
+autonumber
+
+actor Staff
+participant ConsoleApp
+participant RestaurantFacade as Facade
+participant Menu
+participant BurgerFactory
+participant "Topping /\nExtraCheese" as Decorator
+participant "Order.Builder" as Builder
+participant Order
+participant KitchenDisplay
+participant CustomerNotifier
+participant Checkout
+participant CashPayment
+
+== Factory Method + Decorator ==
+Staff -> ConsoleApp : New order: burger + extra cheese
+ConsoleApp -> Facade : createMeal(1, [EXTRA_CHEESE])
+Facade -> Menu : createMeal(1)
+Menu -> BurgerFactory : createMeal()
+BurgerFactory --> Menu : Burger
+Menu --> Facade : Burger
+Facade -> Decorator : applyTo(burger)
+Decorator --> Facade : ExtraCheese(Burger)
+Facade --> ConsoleApp : meal
+
+== Builder ==
+create Builder
+ConsoleApp -> Builder : new Order.Builder()
+ConsoleApp -> Builder : setCustomerName(), setOrderType(),\nsetTableNumber(), addMeal(meal)
+ConsoleApp -> Builder : build()
+create Order
+Builder -> Order : new Order(builder)
+Builder --> ConsoleApp : order
+
+== Observer ==
+ConsoleApp -> Facade : placeOrder(order)
+Facade -> Order : addObserver(kitchenDisplay)
+create CustomerNotifier
+Facade -> CustomerNotifier : new CustomerNotifier(name)
+Facade -> Order : addObserver(customerNotifier)
+Facade -> Order : place()
+Order -> KitchenDisplay : update(order)  [PLACED: ticket]
+Order -> CustomerNotifier : update(order)  [order received]
+
+Staff -> ConsoleApp : Advance status (x2)
+ConsoleApp -> Facade : advanceOrder(id)
+Facade -> Order : advanceStatus()
+Order -> KitchenDisplay : update(order)  [PREPARING, READY]
+Order -> CustomerNotifier : update(order)
+
+== Strategy ==
+Staff -> ConsoleApp : Pay in cash
+create CashPayment
+ConsoleApp -> CashPayment : new CashPayment(cashGiven)
+ConsoleApp -> Facade : payOrder(id, cashPayment)
+Facade -> Checkout : setPaymentStrategy(cashPayment)
+Facade -> Checkout : processPayment(total)
+Checkout -> CashPayment : pay(total)
+CashPayment --> Checkout : true
+Checkout --> Facade : true
+Facade -> Order : markAsPaid()
+
+== Facade rule: complete only when paid ==
+Staff -> ConsoleApp : Advance status
+ConsoleApp -> Facade : advanceOrder(id)
+Facade -> Order : isPaid() ?
+Facade -> Order : advanceStatus()  [READY -> COMPLETED]
+Order -> KitchenDisplay : update(order)
+Order -> CustomerNotifier : update(order)
+@enduml

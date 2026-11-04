@@ -1,0 +1,64 @@
+@startuml 04-observer
+!pragma layout smetana
+title Observer - order status notifications
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+hide empty members
+
+interface OrderSubject <<Subject>> {
+  +addObserver(observer : OrderObserver) : void
+  +removeObserver(observer : OrderObserver) : void
+  +notifyObservers() : void
+}
+
+interface OrderObserver <<Observer>> {
+  +update(order : Order) : void
+}
+
+class Order <<ConcreteSubject>> {
+  -observers : List<OrderObserver>
+  -status : OrderStatus = NEW
+  +getStatus() : OrderStatus
+  +place() : void
+  +advanceStatus() : void
+  +cancel() : void
+  -changeStatus(newStatus : OrderStatus) : void
+}
+
+class KitchenDisplay <<ConcreteObserver>> {
+  +update(order : Order) : void
+  -printTicket(order : Order) : void
+}
+
+class CustomerNotifier <<ConcreteObserver>> {
+  -customerName : String
+  +update(order : Order) : void
+  -messageFor(order : Order) : String
+  -readyMessage(order : Order) : String
+}
+
+enum OrderStatus {
+  NEW
+  PLACED
+  PREPARING
+  READY
+  COMPLETED
+  CANCELLED
+  +next() : OrderStatus
+  +isCancellable() : boolean
+}
+
+OrderSubject <|.. Order
+OrderObserver <|.. KitchenDisplay
+OrderObserver <|.. CustomerNotifier
+Order o--> "*" OrderObserver : notifies
+Order --> OrderStatus
+
+note right of Order
+  changeStatus(s):
+    status = s
+    notifyObservers()
+  notifyObservers():
+    for each observer: observer.update(this)
+end note
+@enduml

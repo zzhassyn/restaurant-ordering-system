@@ -1,0 +1,81 @@
+@startuml 02-decorator
+!pragma layout smetana
+title Decorator - extra toppings
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+hide empty members
+
+interface Meal <<Component>> {
+  +getDescription() : String
+  +getPrice() : int
+}
+
+class Burger <<ConcreteComponent>>
+class Pizza <<ConcreteComponent>>
+class Pasta <<ConcreteComponent>>
+class Salad <<ConcreteComponent>>
+
+abstract class ToppingDecorator <<Decorator>> {
+  #meal : Meal {readOnly}
+  #ToppingDecorator(meal : Meal)
+  +getDescription() : String
+  +getPrice() : int
+}
+
+class ExtraCheese <<ConcreteDecorator>> {
+  {static} +PRICE : int = 400
+  +getDescription() : String
+  +getPrice() : int
+}
+class Bacon <<ConcreteDecorator>> {
+  {static} +PRICE : int = 600
+  +getDescription() : String
+  +getPrice() : int
+}
+class Jalapeno <<ConcreteDecorator>> {
+  {static} +PRICE : int = 300
+  +getDescription() : String
+  +getPrice() : int
+}
+class Mushrooms <<ConcreteDecorator>> {
+  {static} +PRICE : int = 450
+  +getDescription() : String
+  +getPrice() : int
+}
+class ExtraSauce <<ConcreteDecorator>> {
+  {static} +PRICE : int = 250
+  +getDescription() : String
+  +getPrice() : int
+}
+
+enum Topping {
+  EXTRA_CHEESE
+  BACON
+  JALAPENO
+  MUSHROOMS
+  EXTRA_SAUCE
+  +getLabel() : String
+  +getPrice() : int
+  +applyTo(meal : Meal) : Meal
+}
+
+Meal <|.. Burger
+Meal <|.. Pizza
+Meal <|.. Pasta
+Meal <|.. Salad
+Meal <|.. ToppingDecorator
+ToppingDecorator o--> "1" Meal : wraps
+
+ToppingDecorator <|-- ExtraCheese
+ToppingDecorator <|-- Bacon
+ToppingDecorator <|-- Jalapeno
+ToppingDecorator <|-- Mushrooms
+ToppingDecorator <|-- ExtraSauce
+
+Topping ..> ToppingDecorator : <<creates>>
+
+note bottom of ExtraCheese
+  getPrice() { return meal.getPrice() + PRICE; }
+  getDescription() { return meal.getDescription() + ", extra cheese"; }
+end note
+@enduml

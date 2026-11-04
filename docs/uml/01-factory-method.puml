@@ -1,0 +1,64 @@
+@startuml 01-factory-method
+!pragma layout smetana
+title Factory Method - creating meals
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+hide empty members
+
+interface Meal <<Product>> {
+  +getDescription() : String
+  +getPrice() : int
+}
+
+class Burger <<ConcreteProduct>>
+class Pizza <<ConcreteProduct>>
+class Pasta <<ConcreteProduct>>
+class Salad <<ConcreteProduct>>
+
+interface MealFactory <<Creator>> {
+  +createMeal() : Meal
+}
+
+class BurgerFactory <<ConcreteCreator>> {
+  +createMeal() : Meal
+}
+class PizzaFactory <<ConcreteCreator>> {
+  +createMeal() : Meal
+}
+class PastaFactory <<ConcreteCreator>> {
+  +createMeal() : Meal
+}
+class SaladFactory <<ConcreteCreator>> {
+  +createMeal() : Meal
+}
+
+class Menu <<Client>> {
+  -factories : Map<Integer, MealFactory>
+  +createMeal(menuNumber : int) : Meal
+  +getMenuNumbers() : Set<Integer>
+}
+
+Meal <|.. Burger
+Meal <|.. Pizza
+Meal <|.. Pasta
+Meal <|.. Salad
+
+MealFactory <|.. BurgerFactory
+MealFactory <|.. PizzaFactory
+MealFactory <|.. PastaFactory
+MealFactory <|.. SaladFactory
+
+BurgerFactory ..> Burger : <<creates>>
+PizzaFactory ..> Pizza : <<creates>>
+PastaFactory ..> Pasta : <<creates>>
+SaladFactory ..> Salad : <<creates>>
+
+Menu o--> "4" MealFactory
+MealFactory ..> Meal
+
+note right of Menu
+  menu number -> factory,
+  no switch statement and no
+  "new Burger()" in client code
+end note
+@enduml
