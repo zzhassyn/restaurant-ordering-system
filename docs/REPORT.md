@@ -676,47 +676,33 @@ The full demo output is in [`demo-output.txt`](demo-output.txt).
 
 **Screenshot 1. Main menu and dish list** (`run.bat`, option 1)
 
-> _Insert screenshot here._
-
-```
-=== Restaurant Ordering System ===
-------------------------------------------------------------
- 1. Show menu
- 2. New order
- 3. Show orders
- 4. Advance order status (kitchen)
- 5. Pay for an order
- 6. Cancel an order
- 7. Run demo scenario
- 0. Exit
-Choose an option: 1
-  MENU
-   1. Beef burger                   2500 KZT
-   2. Margherita pizza              3500 KZT
-   3. Pasta carbonara               3200 KZT
-   4. Caesar salad                  2200 KZT
-  TOPPINGS
-   1. Extra cheese                  +400 KZT
-   2. Bacon                         +600 KZT
-   3. Jalapeno                      +300 KZT
-   4. Mushrooms                     +450 KZT
-   5. Extra sauce                   +250 KZT
-```
+> Screenshot: save it as `docs/screenshots/01-main-menu.png`
 
 **Screenshot 2. Creating an order with toppings** (option 2): the kitchen ticket and
 the customer message appear as soon as the order is placed.
 
-> _Insert screenshot here._
+> Screenshot: save it as `docs/screenshots/02-new-order.png`
 
 **Screenshot 3. Paying for an order** (option 5): a failed cash payment followed by
 a successful card payment.
 
-> _Insert screenshot here._
+> Screenshot: save it as `docs/screenshots/03-payment.png`
 
-**Screenshots 4–9. Demo scenario** (`run.bat --demo`): one screenshot per section
-(Factory Method, Decorator, Builder, Observer, Strategy, Facade).
+**Screenshot 4. Demo: Factory Method and Decorator** (`run.bat --demo`, sections 1–2)
 
-> _Insert screenshots here._
+> Screenshot: save it as `docs/screenshots/04-demo-factory-decorator.png`
+
+**Screenshot 5. Demo: Builder** (section 3)
+
+> Screenshot: save it as `docs/screenshots/05-demo-builder.png`
+
+**Screenshot 6. Demo: Observer** (section 4)
+
+> Screenshot: save it as `docs/screenshots/06-demo-observer.png`
+
+**Screenshot 7. Demo: Strategy and Facade** (sections 5–6)
+
+> Screenshot: save it as `docs/screenshots/07-demo-strategy-facade.png`
 
 ---
 
@@ -813,4 +799,10 @@ Manual build:
 ```
 javac --release 17 -d out -sourcepath src src/com/restaurant/Main.java
 java -cp out com.restaurant.Main --demo
+```
+
+Rebuild this report as PDF (needs Python 3 and Chrome or Edge):
+
+```
+python docs/build-report-pdf.py
 ```
