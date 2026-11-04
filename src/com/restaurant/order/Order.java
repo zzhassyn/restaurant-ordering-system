@@ -30,6 +30,7 @@ public class Order implements OrderSubject {
 
     private final List<OrderObserver> observers = new ArrayList<>();
     private OrderStatus status = OrderStatus.NEW;
+    private boolean paid;
 
     private Order(Builder builder) {
         this.id = nextId++;
@@ -88,6 +89,21 @@ public class Order implements OrderSubject {
 
     public OrderStatus getStatus() {
         return status;
+    }
+
+    public boolean isPaid() {
+        return paid;
+    }
+
+    public boolean isAwaitingPayment() {
+        return !paid && status != OrderStatus.CANCELLED;
+    }
+
+    public void markAsPaid() {
+        if (!isAwaitingPayment()) {
+            throw new IllegalStateException("Order #" + id + " does not need a payment");
+        }
+        paid = true;
     }
 
     public void place() {
