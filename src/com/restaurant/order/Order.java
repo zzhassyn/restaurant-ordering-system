@@ -1,6 +1,8 @@
 package com.restaurant.order;
 
 import com.restaurant.meal.Meal;
+import com.restaurant.observer.OrderObserver;
+import com.restaurant.observer.OrderSubject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,8 +12,11 @@ import java.util.Objects;
  * Product of the Builder. An order has several optional parts (table number,
  * delivery address, notes) that depend on its type, so instead of a constructor
  * with many parameters it is assembled step by step with {@link Order.Builder}.
+ *
+ * <p>It is also the Subject of the Observer: whenever its status changes, every
+ * subscribed observer (kitchen, customer) is notified.
  */
-public class Order {
+public class Order implements OrderSubject {
 
     private static int nextId = 1;
 
@@ -22,6 +27,9 @@ public class Order {
     private final String deliveryAddress;
     private final List<Meal> meals;
     private final String notes;
+
+    private final List<OrderObserver> observers = new ArrayList<>();
+    private OrderStatus status = OrderStatus.NEW;
 
     private Order(Builder builder) {
         this.id = nextId++;
@@ -76,6 +84,52 @@ public class Order {
             case TAKEAWAY -> orderType.getLabel();
             case DELIVERY -> orderType.getLabel() + " to " + deliveryAddress;
         };
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void place() {
+        if (status != OrderStatus.NEW) {
+            throw new IllegalStateException("Order #" + id + " is already placed");
+        }
+        changeStatus(OrderStatus.PLACED);
+    }
+
+    /** Moves the order to the next step of the kitchen workflow. */
+    public void advanceStatus() {
+        changeStatus(status.next());
+    }
+
+    public void cancel() {
+        if (!status.isCancellable()) {
+            throw new IllegalStateException("Order #" + id + " is " + status + " and can no longer be cancelled");
+        }
+        changeStatus(OrderStatus.CANCELLED);
+    }
+
+    @Override
+    public void addObserver(OrderObserver observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(OrderObserver observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        // Iterate over a copy so an observer may unsubscribe while being notified
+        for (OrderObserver observer : List.copyOf(observers)) {
+            observer.update(this);
+        }
+    }
+
+    private void changeStatus(OrderStatus newStatus) {
+        status = newStatus;
+        notifyObservers();
     }
 
     // Builder
