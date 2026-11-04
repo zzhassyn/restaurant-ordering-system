@@ -1,0 +1,123 @@
+=== Restaurant Ordering System - design patterns demo ===
+
+============================================================
+ 1. FACTORY METHOD - each dish is created by its own factory
+============================================================
+   1. Beef burger           2500 KZT   (class Burger)
+   2. Margherita pizza      3500 KZT   (class Pizza)
+   3. Pasta carbonara       3200 KZT   (class Pasta)
+   4. Caesar salad          2200 KZT   (class Salad)
+
+============================================================
+ 2. DECORATOR - toppings wrap a meal at runtime
+============================================================
+   Beef burger                                         2500 KZT
+   Beef burger, extra cheese                           2900 KZT
+   Beef burger, extra cheese, bacon                    3500 KZT
+  The same decorators work for any dish:
+   Margherita pizza, mushrooms, jalapeno, extra sauce  4500 KZT
+  A topping can even be added twice:
+   Beef burger, bacon, bacon                           3700 KZT
+
+============================================================
+ 3. BUILDER - orders are assembled step by step
+============================================================
+   Built #1 Aigerim | Dine-in, table 5 | 2 meal(s) | 5700 KZT
+   Built #2 Timur | Delivery to Mangilik El 55, apt 12 | 2 meal(s) | 7450 KZT
+   Built #3 Dana | Takeaway | 1 meal(s) | 3600 KZT
+   Built #4 Arman | Dine-in, table 2 | 1 meal(s) | 2500 KZT
+  Invalid combinations are rejected by build():
+   Dine-in without a table  -> rejected: A dine-in order needs a table number
+   Order without meals      -> rejected: An order must contain at least one meal
+
+============================================================
+ 4. OBSERVER - kitchen and customer follow every status change
+============================================================
+
+> Placing the orders (kitchen display and customer notifier subscribe to each)
+  [KITCHEN] New ticket #1 (Dine-in, table 5)
+  [KITCHEN]   - Beef burger, extra cheese, bacon
+  [KITCHEN]   - Caesar salad
+  [KITCHEN]   Notes: No onions, please
+  [CUSTOMER Aigerim] Order #1 received, total 5700 KZT
+  [KITCHEN] New ticket #2 (Delivery to Mangilik El 55, apt 12)
+  [KITCHEN]   - Margherita pizza, mushrooms, jalapeno
+  [KITCHEN]   - Pasta carbonara
+  [CUSTOMER Timur] Order #2 received, total 7450 KZT
+  [KITCHEN] New ticket #3 (Takeaway)
+  [KITCHEN]   - Pasta carbonara, extra cheese
+  [CUSTOMER Dana] Order #3 received, total 3600 KZT
+  [KITCHEN] New ticket #4 (Dine-in, table 2)
+  [KITCHEN]   - Beef burger
+  [CUSTOMER Arman] Order #4 received, total 2500 KZT
+
+> The kitchen starts cooking for Aigerim, Timur and Dana
+  [KITCHEN] Ticket #1: cooking started
+  [CUSTOMER Aigerim] The chef started cooking order #1
+  [KITCHEN] Ticket #2: cooking started
+  [CUSTOMER Timur] The chef started cooking order #2
+  [KITCHEN] Ticket #3: cooking started
+  [CUSTOMER Dana] The chef started cooking order #3
+
+> Arman changes his mind and cancels
+  [KITCHEN] Ticket #4: CANCELLED - stop cooking
+  [CUSTOMER Arman] Order #4 has been cancelled
+
+> The dishes for Aigerim, Timur and Dana are ready
+  [KITCHEN] Ticket #1: ready to hand over
+  [CUSTOMER Aigerim] Order #1 is ready, a waiter is bringing it to table 5
+  [KITCHEN] Ticket #2: ready to hand over
+  [CUSTOMER Timur] Order #2 is ready, the courier is heading to Mangilik El 55, apt 12
+  [KITCHEN] Ticket #3: ready to hand over
+  [CUSTOMER Dana] Order #3 is ready for pickup at the counter
+
+============================================================
+ 5. STRATEGY - the payment method is chosen at runtime
+============================================================
+
+> Aigerim tries to pay with 5000 KZT in cash
+  [PAYMENT] Paying 5700 KZT by Cash
+  [PAYMENT] 5000 KZT in cash is not enough, 700 KZT more is needed
+  Result: payment failed
+
+> Not enough, so she switches to a card
+  [PAYMENT] Paying 5700 KZT by Card
+  [PAYMENT] Charged 5700 KZT to card **** 3456
+  Result: paid
+
+> Timur pays by QR code
+  [PAYMENT] Paying 7450 KZT by QR code
+  [PAYMENT] QR code scanned from +7 701 555 1234, 7450 KZT confirmed
+  Result: paid
+
+============================================================
+ 6. FACADE - one class drives the whole workflow
+============================================================
+  Every step above was a single RestaurantFacade call:
+  createMeal, placeOrder, advanceOrder, payOrder, cancelOrder.
+
+> Completing the paid orders of Aigerim and Timur
+  [KITCHEN] Ticket #1: closed
+  [CUSTOMER Aigerim] Order #1 completed. Enjoy your meal!
+  [KITCHEN] Ticket #2: closed
+  [CUSTOMER Timur] Order #2 completed. Enjoy your meal!
+
+> Dana's order is ready but not paid yet - the facade blocks completion
+  ! Order #3 must be paid before it can be completed
+  [PAYMENT] Paying 3600 KZT by Cash
+  [PAYMENT] Received 4000 KZT in cash, change: 400 KZT
+  Result: paid
+  [KITCHEN] Ticket #3: closed
+  [CUSTOMER Dana] Order #3 completed. Enjoy your meal!
+
+> Final state of all orders
+  #1 Aigerim | Dine-in, table 5 | COMPLETED | 5700 KZT | paid
+       - Beef burger, extra cheese, bacon (3500 KZT)
+       - Caesar salad (2200 KZT)
+  #2 Timur | Delivery to Mangilik El 55, apt 12 | COMPLETED | 7450 KZT | paid
+       - Margherita pizza, mushrooms, jalapeno (4250 KZT)
+       - Pasta carbonara (3200 KZT)
+  #3 Dana | Takeaway | COMPLETED | 3600 KZT | paid
+       - Pasta carbonara, extra cheese (3600 KZT)
+  #4 Arman | Dine-in, table 2 | CANCELLED | 2500 KZT | not paid
+       - Beef burger (2500 KZT)
