@@ -71,7 +71,6 @@ public class Order implements OrderSubject {
         return total;
     }
 
-    /** Short human-readable destination, e.g. "Dine-in, table 5". */
     public String describeDestination() {
         return switch (orderType) {
             case DINE_IN -> orderType.getLabel() + ", table " + tableNumber;
@@ -106,7 +105,6 @@ public class Order implements OrderSubject {
         changeStatus(OrderStatus.PLACED);
     }
 
-    /** Moves the order to the next step of the kitchen workflow. */
     public void advanceStatus() {
         changeStatus(status.next());
     }

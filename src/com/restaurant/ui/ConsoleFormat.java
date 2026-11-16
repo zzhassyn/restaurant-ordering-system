@@ -8,7 +8,7 @@ import com.restaurant.topping.Topping;
 import java.util.List;
 import java.util.Map;
 
-/** Console output shared by the interactive app and the demo scenario. */
+
 final class ConsoleFormat {
 
     private static final String DOUBLE_LINE = "============================================================";

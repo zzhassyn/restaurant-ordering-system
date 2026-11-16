@@ -16,10 +16,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-/**
- * Interactive console client. All restaurant logic goes through {@link RestaurantFacade};
- * this class only reads input and prints results.
- */
+
 public class ConsoleApp {
 
     private static final String LINE = "------------------------------------------------------------";
@@ -210,7 +207,6 @@ public class ConsoleApp {
         }
     }
 
-    /** Throws NoSuchElementException when the input stream is closed. */
     private String readLine(String prompt) {
         System.out.print(prompt);
         return scanner.nextLine();

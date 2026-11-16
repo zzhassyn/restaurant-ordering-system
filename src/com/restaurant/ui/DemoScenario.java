@@ -13,10 +13,7 @@ import com.restaurant.topping.Topping;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Scripted walk-through that shows all six patterns one by one.
- * Run with {@code --demo} or choose "Run demo scenario" in the console menu.
- */
+
 public class DemoScenario {
 
     private final RestaurantFacade restaurant;
