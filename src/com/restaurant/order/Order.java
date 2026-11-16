@@ -128,7 +128,6 @@ public class Order implements OrderSubject {
 
     @Override
     public void notifyObservers() {
-        // Iterate over a copy so an observer may unsubscribe while being notified
         for (OrderObserver observer : List.copyOf(observers)) {
             observer.update(this);
         }
