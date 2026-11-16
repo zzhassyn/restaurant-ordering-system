@@ -2,12 +2,12 @@
 
 **Final Project Report — Software Design Patterns**
 
-| | |
-|---|---|
-| Team | Zhassyn Zhalynuly, Daniyar Baikanov |
-| Group | _to be filled in_ |
-| Lecturer | Almas Ospanov |
-| Language | Java 17 |
+| |                                           |
+|---|-------------------------------------------|
+| Team | Zhassyn Zhalynuly, Daniyar Baikanov       |
+| Group | _SE-2527_                                 |
+| Lecturer | Bekenov Yerassyl                                          |
+| Language | Java 17                                   |
 | Repository | https://github.com/zzhassyn/restaurant-ordering-system |
 
 ---
