@@ -4,10 +4,7 @@ import com.restaurant.meal.Meal;
 
 import java.util.function.UnaryOperator;
 
-/**
- * Toppings a customer can choose. Each one knows which decorator wraps the meal,
- * so callers can add toppings by choice instead of naming decorator classes.
- */
+
 public enum Topping {
 
     EXTRA_CHEESE("Extra cheese", ExtraCheese.PRICE, ExtraCheese::new),

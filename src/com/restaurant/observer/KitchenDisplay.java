@@ -3,10 +3,7 @@ package com.restaurant.observer;
 import com.restaurant.meal.Meal;
 import com.restaurant.order.Order;
 
-/**
- * Concrete Observer: the screen in the kitchen. One display is subscribed to every
- * order; it prints a cooking ticket for new orders and tracks their progress.
- */
+
 public class KitchenDisplay implements OrderObserver {
 
     @Override

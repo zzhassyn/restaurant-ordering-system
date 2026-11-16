@@ -7,10 +7,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * The restaurant menu: maps each menu number to the factory that creates that dish.
- * Clients choose a dish by its number and never call a meal constructor themselves.
- */
 public class Menu {
 
     private final Map<Integer, MealFactory> factories = new LinkedHashMap<>();

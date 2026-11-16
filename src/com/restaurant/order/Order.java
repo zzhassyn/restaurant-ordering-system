@@ -8,14 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Product of the Builder. An order has several optional parts (table number,
- * delivery address, notes) that depend on its type, so instead of a constructor
- * with many parameters it is assembled step by step with {@link Order.Builder}.
- *
- * <p>It is also the Subject of the Observer: whenever its status changes, every
- * subscribed observer (kitchen, customer) is notified.
- */
+
 public class Order implements OrderSubject {
 
     private static int nextId = 1;

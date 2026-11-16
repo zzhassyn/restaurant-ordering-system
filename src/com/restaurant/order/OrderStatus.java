@@ -1,6 +1,6 @@
 package com.restaurant.order;
 
-/** Lifecycle of an order: NEW -> PLACED -> PREPARING -> READY -> COMPLETED, or CANCELLED. */
+
 public enum OrderStatus {
 
     NEW,

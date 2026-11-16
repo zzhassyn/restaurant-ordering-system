@@ -2,10 +2,7 @@ package com.restaurant.observer;
 
 import com.restaurant.order.Order;
 
-/**
- * Concrete Observer: sends status messages to the customer who made the order
- * (printed to the console here, an SMS or push notification in a real system).
- */
+
 public class CustomerNotifier implements OrderObserver {
 
     private final String customerName;

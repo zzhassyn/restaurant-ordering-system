@@ -1,9 +1,6 @@
 package com.restaurant.payment;
 
-/**
- * Context of the Strategy. It does not know how a payment is made - it delegates
- * to whichever strategy is currently set, and the strategy can be swapped at runtime.
- */
+
 public class Checkout {
 
     private PaymentStrategy paymentStrategy;

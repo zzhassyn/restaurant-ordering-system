@@ -14,11 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Facade: one simple entry point to the whole ordering workflow. The client does not
- * deal with meal factories, topping decorators, observer subscriptions or the payment
- * context - it calls a few high-level methods and the facade coordinates the rest.
- */
+
 public class RestaurantFacade {
 
     private final Menu menu = new Menu();
@@ -26,7 +22,6 @@ public class RestaurantFacade {
     private final Checkout checkout = new Checkout();
     private final Map<Integer, Order> orders = new LinkedHashMap<>();
 
-    /** One sample meal per menu number, created through the factories. */
     public Map<Integer, Meal> getMenuItems() {
         Map<Integer, Meal> items = new LinkedHashMap<>();
         for (int number : menu.getMenuNumbers()) {
